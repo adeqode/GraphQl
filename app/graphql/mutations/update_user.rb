@@ -7,10 +7,12 @@ module Mutations
     type Types::UserType
 
     def resolve(name:, email:)
-      user = User.find_by(name: name)
+      user = User.where(name: name).first
 
-      if user.present?
+      unless user.blank?
         user.update(email: email)
+      else    
+        raise GraphQL::ExecutionError, "No User found with name: #{name}"
       end
 
       user
